@@ -7,7 +7,7 @@ interface HeaderProps {
 
 //const Header = (props: { name: string }) => {
 const Header = (props: HeaderProps) => {
-  console.log(props);
+  //console.log(props);
   return (
     <View>
       <Text>Welcome to {props.name}</Text>
