@@ -7,7 +7,7 @@ const Input = () => {
   return (
     <View>
       <TextInput
-        placeholder="place holder"
+        placeholder="place holder "
         onChangeText={(changedTxt: string) => setTxt(changedTxt)}
         value={txt}
       />
