@@ -1,11 +1,16 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TextInput, View } from "react-native";
+import Header from "./components/Header";
+import Input from "./components/Input";
+import { useState } from "react";
 
 export default function App() {
+  const appName = "OnePlus APP";
   return (
     <View style={styles.container}>
-      <Text>Canadian PM Justin Trudeau announces resignation!</Text>
+      <Header name={appName} />
       <StatusBar style="auto" />
+      <Input />
     </View>
   );
 }
