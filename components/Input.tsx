@@ -7,7 +7,7 @@ const Input = (props: { x: boolean }) => {
   const [charCount, setCharCount] = useState(0);
   const [isFocus, setFocus] = useState(false);
 
-  console.log(props.x);
+  //console.log(props.x);
 
   return (
     <View>
