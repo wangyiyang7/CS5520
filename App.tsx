@@ -6,11 +6,12 @@ import { useState } from "react";
 
 export default function App() {
   const appName = "OnePlus APP";
+  let autofocus: boolean = true;
   return (
     <View style={styles.container}>
       <Header name={appName} />
       <StatusBar style="auto" />
-      <Input />
+      <Input x={autofocus} />
     </View>
   );
 }
