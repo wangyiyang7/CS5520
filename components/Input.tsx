@@ -12,12 +12,12 @@ const Input = (props: { x: boolean }) => {
   return (
     <View>
       <TextInput
-        onFocus={() => setFocus(true)}
-        onBlur={() => setFocus(false)}
-        autoFocus={props.x}
         placeholder="place holder"
         onChangeText={(changedTxt: string) => setTxt(changedTxt)}
         value={txt}
+        onFocus={() => setFocus(true)}
+        onBlur={() => setFocus(false)}
+        autoFocus={props.x}
       />
 
       {isFocus && txt.length > 0 ? (
