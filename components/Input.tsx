@@ -1,4 +1,4 @@
-import { View, Text, TextInput } from "react-native";
+import { View, Text, TextInput, Button } from "react-native";
 import React from "react";
 import { useState } from "react";
 
@@ -8,6 +8,10 @@ const Input = (props: { x: boolean }) => {
   const [isFocus, setFocus] = useState(false);
 
   //console.log(props.x);
+
+  function handleConfirm() {
+    console.log("User typed: ", txt);
+  }
 
   return (
     <View>
@@ -27,6 +31,7 @@ const Input = (props: { x: boolean }) => {
           {txt.length >= 3 ? "Thank you" : "Please type more than 3 characters"}
         </Text>
       ) : null}
+      <Button title="Confirm" onPress={handleConfirm}/>
     </View>
   );
 };
