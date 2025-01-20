@@ -7,11 +7,19 @@ import { useState } from "react";
 export default function App() {
   const appName = "OnePlus APP";
   let autofocus: boolean = true;
+  const [inputText, setInputText] = useState("");
+
+  function handleInputData(inputText: string) {
+    console.log("Parent: ", inputText);
+    setInputText(inputText);
+
+  }
   return (
     <View style={styles.container}>
       <Header name={appName} />
       <StatusBar style="auto" />
-      <Input x={autofocus} />
+      <Input x={autofocus} inputHandler={handleInputData} />
+      <Text>User typed: {inputText}</Text>
     </View>
   );
 }
