@@ -12,7 +12,7 @@ import Input from "./components/Input";
 import { useState } from "react";
 
 export default function App() {
-  const appName = "OnePlus APP";
+  const appName = "Balding APP";
   let autofocus: boolean = true;
   const [inputText, setInputText] = useState("");
   const [modalVisible, setVisible] = useState(false);
@@ -29,16 +29,20 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header name={appName} />
       <StatusBar style="auto" />
-      <Input
-        x={autofocus}
-        inputHandler={handleInputData}
-        modalVisible={modalVisible}
-      />
-      <Text>User typed: {inputText}</Text>
-      <View style={styles.buttonContainer}>
-        <Button title="Add a goal" onPress={handleVisible} />
+      <View style={styles.topContainer}>
+        <Header name={appName} />
+        <Input
+          x={autofocus}
+          inputHandler={handleInputData}
+          modalVisible={modalVisible}
+        />
+        <View style={styles.buttonContainer}>
+          <Button title="Add a goal" onPress={handleVisible} />
+        </View>
+      </View>
+      <View style={styles.bottomContainer}>
+        <Text>User typed: {inputText}</Text>
       </View>
     </SafeAreaView>
   );
@@ -48,18 +52,23 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     //backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  input: {
-    marginBottom: 10,
+    //alignItems: "center",
+    //justifyContent: "center",
   },
   buttonContainer: {
     width: "30%",
     margin: 10,
+    marginBottom: 10,
+  },
+  topContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
   bottomContainer: {
-    flex: 1,
+    flex: 4,
     backgroundColor: "#dcd",
+    alignItems: "center",
+    //justifyContent: "center",
   },
 });

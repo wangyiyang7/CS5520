@@ -82,13 +82,6 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  topContainer: {
-    flex: 1,
-    alignItems: "center",
-  },
-  bottomContainer: {
-    flex: 4,
-  },
 });
 
 export default Input;
