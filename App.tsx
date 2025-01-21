@@ -43,7 +43,11 @@ export default function App() {
         modalVisible={modalVisible}
       />
       <View style={styles.bottomContainer}>
-        <Text style={styles.userType}>User typed: {inputText}</Text>
+        {inputText.length > 0 ? (
+          <View style={styles.userTyped}>
+            <Text>{inputText}</Text>
+          </View>
+        ) : null}
       </View>
     </SafeAreaView>
   );
@@ -66,8 +70,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#dcd",
     alignItems: "center",
   },
-  userType: {
-    margin: 20,
-    fontSize: 20,
+  userTyped: {
+    margin: 10,
+    backgroundColor: "#fff8dc",
+    borderRadius: 5,
+    padding: 10,
   },
 });
