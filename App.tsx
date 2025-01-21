@@ -18,13 +18,17 @@ export default function App() {
   const [modalVisible, setVisible] = useState(false);
 
   function handleInputData(inputText: string) {
-    //console.log("Parent: ", inputText);
     setInputText(inputText);
     setVisible(false);
   }
 
-  function handleVisible() {
+  function handleVisibleTrue() {
     setVisible(true);
+  }
+
+  function handleVisibileFlase() {
+    setVisible(false);
+    //console.log("!!!??" + modalVisible);
   }
 
   return (
@@ -34,13 +38,14 @@ export default function App() {
         <Header name={appName} />
 
         <View style={styles.buttonContainer}>
-          <Button title="Add a goal" onPress={handleVisible} />
+          <Button title="Add a goal" onPress={handleVisibleTrue} />
         </View>
       </View>
       <Input
         x={autofocus}
         inputHandler={handleInputData}
         modalVisible={modalVisible}
+        dismissModal={handleVisibileFlase}
       />
       <View style={styles.bottomContainer}>
         {inputText.length > 0 ? (

@@ -1,4 +1,12 @@
-import { StyleSheet, View, Text, TextInput, Button, Modal } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  TextInput,
+  Button,
+  Modal,
+  Alert,
+} from "react-native";
 import React from "react";
 import { useState } from "react";
 /*
@@ -11,6 +19,7 @@ const Input = (props: {
   x: boolean;
   inputHandler: Function;
   modalVisible: boolean;
+  dismissModal: Function;
 }) => {
   const [txt, setTxt] = useState("");
 
@@ -18,6 +27,21 @@ const Input = (props: {
 
   function handleConfirm() {
     props.inputHandler(txt);
+  }
+
+  function handleCancel() {
+    Alert.alert("Alert!", "Sure to cancel?", [
+      {
+        text: "Cancel",
+      },
+      {
+        text: "OK",
+        onPress: () => {
+          props.dismissModal();
+          //console.log("!!!" + props.modalVisible);
+        },
+      },
+    ]);
   }
 
   return (
@@ -35,7 +59,6 @@ const Input = (props: {
           onBlur={() => setFocus(false)}
           autoFocus={props.x}
         />
-
         {isFocus && txt.length > 0 ? (
           <Text>{txt.length}</Text>
         ) : !isFocus && txt.length > 0 ? (
@@ -45,7 +68,11 @@ const Input = (props: {
               : "Please type more than 3 characters"}
           </Text>
         ) : null}
-        <Button title="Confirm" onPress={handleConfirm} />
+        <View style={styles.row}>
+          <Button title="Confirm" onPress={handleConfirm} />
+
+          <Button title="Cancel" onPress={handleCancel} />
+        </View>
       </View>
     </Modal>
   );
@@ -59,8 +86,18 @@ const styles = StyleSheet.create({
     //padding: 50,
     justifyContent: "center",
     alignItems: "center",
-    marginHorizontal: 110,
-    marginVertical: 310,
+    marginHorizontal: 100,
+    marginVertical: 330,
+  },
+  row: {
+    flexDirection: "row",
+    alignSelf: "stretch",
+    justifyContent: "space-evenly",
+    marginTop: 30,
+    //borderWidth: 1,
+  },
+  spacing: {
+    width: 15, // Adjust the width to add more or less spacing
   },
 });
 
