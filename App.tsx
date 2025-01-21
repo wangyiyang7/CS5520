@@ -1,26 +1,73 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  Button,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import Header from "./components/Header";
 import Input from "./components/Input";
 import { useState } from "react";
 
 export default function App() {
-  const appName = "OnePlus APP";
+  const appName = "Balding APP";
   let autofocus: boolean = true;
+  const [inputText, setInputText] = useState("");
+  const [modalVisible, setVisible] = useState(false);
+
+  function handleInputData(inputText: string) {
+    //console.log("Parent: ", inputText);
+    setInputText(inputText);
+    setVisible(false);
+  }
+
+  function handleVisible() {
+    setVisible(true);
+  }
+
   return (
-    <View style={styles.container}>
-      <Header name={appName} />
+    <SafeAreaView style={styles.container}>
       <StatusBar style="auto" />
-      <Input x={autofocus} />
-    </View>
+      <View style={styles.topContainer}>
+        <Header name={appName} />
+
+        <View style={styles.buttonContainer}>
+          <Button title="Add a goal" onPress={handleVisible} />
+        </View>
+      </View>
+      <Input
+        x={autofocus}
+        inputHandler={handleInputData}
+        modalVisible={modalVisible}
+      />
+      <View style={styles.bottomContainer}>
+        <Text style={styles.userType}>User typed: {inputText}</Text>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+  },
+  buttonContainer: {
+    width: "30%",
+  },
+  topContainer: {
+    flex: 1,
     alignItems: "center",
     justifyContent: "center",
+  },
+  bottomContainer: {
+    flex: 4,
+    backgroundColor: "#dcd",
+    alignItems: "center",
+  },
+  userType: {
+    margin: 20,
+    fontSize: 20,
   },
 });
