@@ -36,7 +36,6 @@ export default function App() {
       <StatusBar style="auto" />
       <View style={styles.topContainer}>
         <Header name={appName} />
-
         <View style={styles.buttonContainer}>
           <Button title="Add a goal" onPress={handleVisibleTrue} />
         </View>

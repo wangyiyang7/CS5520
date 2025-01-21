@@ -6,6 +6,7 @@ import {
   Button,
   Modal,
   Alert,
+  Image,
 } from "react-native";
 import React from "react";
 import { useState } from "react";
@@ -27,6 +28,7 @@ const Input = (props: {
 
   function handleConfirm() {
     props.inputHandler(txt);
+    setTxt("");
   }
 
   function handleCancel() {
@@ -38,6 +40,7 @@ const Input = (props: {
         text: "OK",
         onPress: () => {
           props.dismissModal();
+          setTxt("");
           //console.log("!!!" + props.modalVisible);
         },
       },
@@ -51,8 +54,26 @@ const Input = (props: {
       transparent={true}
     >
       <View style={styles.modalView}>
+        <Image
+          style={styles.image}
+          alt="text description of the image"
+          source={{
+            uri: "https://cdn-icons-png.flaticon.com/512/2617/2617812.png",
+          }}
+        />
+        <Image
+          style={styles.image}
+          alt="text description of the image"
+          source={require("./2617812.png")}
+        />
         <TextInput
-          placeholder="place holder "
+          style={{
+            borderWidth: 2,
+            marginTop: 20,
+            padding: 10,
+            borderColor: "purple",
+          }}
+          placeholder="Type something..."
           onChangeText={(changedTxt: string) => setTxt(changedTxt)}
           value={txt}
           onFocus={() => setFocus(true)}
@@ -69,7 +90,11 @@ const Input = (props: {
           </Text>
         ) : null}
         <View style={styles.row}>
-          <Button title="Confirm" onPress={handleConfirm} />
+          <Button
+            title="Confirm"
+            onPress={handleConfirm}
+            disabled={txt.length < 3}
+          />
 
           <Button title="Cancel" onPress={handleCancel} />
         </View>
@@ -86,8 +111,8 @@ const styles = StyleSheet.create({
     //padding: 50,
     justifyContent: "center",
     alignItems: "center",
-    marginHorizontal: 100,
-    marginVertical: 330,
+    marginHorizontal: 80,
+    marginVertical: 250,
   },
   row: {
     flexDirection: "row",
@@ -96,8 +121,9 @@ const styles = StyleSheet.create({
     marginTop: 30,
     //borderWidth: 1,
   },
-  spacing: {
-    width: 15, // Adjust the width to add more or less spacing
+  image: {
+    width: 100,
+    height: 100,
   },
 });
 
