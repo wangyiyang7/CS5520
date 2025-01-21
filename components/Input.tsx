@@ -54,7 +54,7 @@ const Input = (props: {
 const styles = StyleSheet.create({
   modalView: {
     flex: 1,
-    backgroundColor: "#e6e6fa",
+    backgroundColor: "#dcdcdc",
     borderRadius: 20,
     //padding: 50,
     justifyContent: "center",
