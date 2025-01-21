@@ -32,17 +32,18 @@ export default function App() {
       <StatusBar style="auto" />
       <View style={styles.topContainer}>
         <Header name={appName} />
-        <Input
-          x={autofocus}
-          inputHandler={handleInputData}
-          modalVisible={modalVisible}
-        />
+
         <View style={styles.buttonContainer}>
           <Button title="Add a goal" onPress={handleVisible} />
         </View>
       </View>
+      <Input
+        x={autofocus}
+        inputHandler={handleInputData}
+        modalVisible={modalVisible}
+      />
       <View style={styles.bottomContainer}>
-        <Text>User typed: {inputText}</Text>
+        <Text style={styles.userType}>User typed: {inputText}</Text>
       </View>
     </SafeAreaView>
   );
@@ -51,14 +52,9 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    //backgroundColor: "#fff",
-    //alignItems: "center",
-    //justifyContent: "center",
   },
   buttonContainer: {
     width: "30%",
-    margin: 10,
-    marginBottom: 10,
   },
   topContainer: {
     flex: 1,
@@ -69,6 +65,9 @@ const styles = StyleSheet.create({
     flex: 4,
     backgroundColor: "#dcd",
     alignItems: "center",
-    //justifyContent: "center",
+  },
+  userType: {
+    margin: 20,
+    fontSize: 20,
   },
 });

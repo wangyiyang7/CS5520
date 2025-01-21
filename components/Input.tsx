@@ -13,13 +13,10 @@ const Input = (props: {
   modalVisible: boolean;
 }) => {
   const [txt, setTxt] = useState("");
-  const [charCount, setCharCount] = useState(0);
+
   const [isFocus, setFocus] = useState(false);
 
-  //console.log(props.x);
-
   function handleConfirm() {
-    //console.log("Child: ", txt);
     props.inputHandler(txt);
   }
 
@@ -55,32 +52,15 @@ const Input = (props: {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    //backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  input: {
-    marginBottom: 10,
-  },
   modalView: {
     flex: 1,
+    backgroundColor: "#e6e6fa",
+    borderRadius: 20,
+    //padding: 50,
     justifyContent: "center",
     alignItems: "center",
-    margin: 50,
-    marginVertical: 350,
-    backgroundColor: "yellow",
-    borderRadius: 20,
-    //padding: 55,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
+    marginHorizontal: 110,
+    marginVertical: 310,
   },
 });
 
