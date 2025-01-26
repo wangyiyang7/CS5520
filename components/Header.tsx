@@ -9,7 +9,9 @@ interface HeaderProps {
 const Header = (props: HeaderProps) => {
   return (
     <View style={styles.headerView}>
-      <Text style={{ fontSize: 20 }}>Welcome to {props.name}</Text>
+      <Text style={{ fontSize: 20, color: "purple", fontWeight: "bold" }}>
+        Welcome to {props.name}
+      </Text>
     </View>
   );
 };
@@ -17,8 +19,9 @@ const Header = (props: HeaderProps) => {
 const styles = StyleSheet.create({
   headerView: {
     margin: 30,
-    borderWidth: 1,
+    borderWidth: 2,
     padding: 10,
+    borderColor: "purple",
   },
 });
 
