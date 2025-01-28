@@ -47,7 +47,9 @@ export default function App() {
   }
 
   function handleDelete(deleteNum: number) {
-    console.log(deleteNum);
+    const newGoalList = goalList.filter((x) => x.id != deleteNum);
+    console.log(newGoalList);
+    setGoalList(newGoalList);
   }
 
   return (
