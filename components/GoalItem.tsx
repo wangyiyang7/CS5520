@@ -1,5 +1,5 @@
 /*rnfs*/
-import { Button, StyleSheet, Text, View } from "react-native";
+import { Alert, Button, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { Goal } from "@/App";
 
@@ -16,7 +16,24 @@ export function DeleteAll(props: { deleteAll: () => void }) {
   console.log("delete all");
   return (
     <View style={{ marginTop: 10 }}>
-      <Button title="delete all" onPress={props.deleteAll} />
+      <Button
+        title="delete all"
+        onPress={() => {
+          Alert.alert("Delete All", "Are you sure?", [
+            {
+              text: "Cancel",
+              onPress: () => {},
+              style: "cancel",
+            },
+            {
+              text: "OK",
+              onPress: () => {
+                props.deleteAll();
+              },
+            },
+          ]);
+        }}
+      />
     </View>
   );
 }
