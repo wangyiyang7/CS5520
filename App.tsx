@@ -2,6 +2,7 @@ import { StatusBar } from "expo-status-bar";
 import {
   Button,
   FlatList,
+  Platform,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -10,8 +11,8 @@ import {
 } from "react-native";
 import Header from "./components/Header";
 import Input from "./components/Input";
-import { useState } from "react";
-import GoalItem from "./components/GoalItem";
+import React, { useState } from "react";
+import GoalItem, { DeleteAll, Separator } from "./components/GoalItem";
 
 export interface Goal {
   id: number;
@@ -52,6 +53,10 @@ export default function App() {
     setGoalList(newGoalList);
   }
 
+  function handleDeleteAll() {
+    setGoalList([]);
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="auto" />
@@ -68,21 +73,47 @@ export default function App() {
         dismissModal={handleVisibileFlase}
       />
       <View style={styles.bottomContainer}>
-        {inputText.length > 0 ? (
-          <FlatList
-            contentContainerStyle={{ alignItems: "center" }}
-            data={goalList}
-            renderItem={({ item }) => {
-              return (
-                /*
-                <View style={styles.userTyped}>
-                  <Text style={{ fontSize: 80 }}>{item.text}</Text>
-                </View>*/
+        <FlatList
+          contentContainerStyle={{ alignItems: "center" }}
+          data={goalList}
+          ListEmptyComponent={
+            <Text style={{ marginTop: 10, fontSize: 30, color: "purple" }}>
+              No goals to show
+            </Text>
+          }
+          ListHeaderComponent={() =>
+            goalList.length > 0 && (
+              <Text
+                style={{
+                  marginTop: 10,
+                  marginBottom: 10,
+                  fontSize: 30,
+                  color: "purple",
+                }}
+              >
+                My Goal List
+              </Text>
+            )
+          }
+          ListFooterComponent={() =>
+            goalList.length > 0 && <DeleteAll deleteAll={handleDeleteAll} />
+          }
+          ItemSeparatorComponent={Separator}
+          renderItem={({ item }) => {
+            return (
+              <View>
+                {/*
+                  <View style={styles.userTyped}>
+                    <Text style={{ fontSize: 80 }}>{item.text}</Text>
+                  </View>
+                  */}
+
                 <GoalItem item={item} delete={() => handleDelete(item.id)} />
-              );
-            }}
-          />
-        ) : /*
+              </View>
+            );
+          }}
+        />
+        {/*
           <ScrollView contentContainerStyle={{ alignItems: "center" }}>
             {goalList.map((x) => {
               return (
@@ -92,8 +123,7 @@ export default function App() {
               );
             })}
           </ScrollView>
-          */
-        null}
+          */}
       </View>
     </SafeAreaView>
   );
