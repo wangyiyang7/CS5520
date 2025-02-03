@@ -11,13 +11,20 @@ import {
 } from "react-native";
 import Header from "./components/Header";
 import Input from "./components/Input";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import GoalItem, { DeleteAll, Separator } from "./components/GoalItem";
 import { database } from "./Firebase/firebaseSetup";
 import { goalData, writeToDB } from "./Firebase/firestoreHelper";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  QuerySnapshot,
+} from "firebase/firestore";
 
 export interface Goal {
-  id: number;
+  id: string;
   text: string;
 }
 
@@ -28,6 +35,23 @@ export default function App() {
   const [inputText, setInputText] = useState("");
   const [modalVisible, setVisible] = useState(false);
   const [goalList, setGoalList] = useState<Goal[]>([]);
+
+  useEffect(() => {
+    onSnapshot(collection(database, "goals"), (querySnapshot) => {
+      if (querySnapshot.empty) {
+        setGoalList([]);
+        console.log("empty");
+      } else {
+        let goalsArray: Goal[] = [];
+        querySnapshot.forEach((doc) => {
+          goalsArray.push({ ...(doc.data() as goalData), id: doc.id });
+        });
+        setGoalList(goalsArray);
+        console.log(goalsArray);
+      }
+    });
+    // return () => unsubscribe();
+  }, []);
 
   //function handleInputData(inputText: string) {
   //setInputText(inputText);
@@ -52,10 +76,16 @@ export default function App() {
     //console.log("!!!??" + modalVisible);
   }
 
-  function handleDelete(deleteNum: number) {
+  function handleDelete(deleteNum: string) {
     const newGoalList = goalList.filter((x) => x.id != deleteNum);
     //console.log(newGoalList);
     setGoalList(newGoalList);
+  }
+
+  function deleteFromDB(id: string, collectionName: string) {
+    try {
+      deleteDoc(doc(database, collectionName, id));
+    } catch (e) {}
   }
 
   function handleDeleteAll() {
