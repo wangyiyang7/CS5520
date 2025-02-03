@@ -21,7 +21,7 @@ export interface Goal {
 }
 
 export default function App() {
-  console.log(app);
+  //console.log(app);
   const appName = "Balding APP";
   let autofocus: boolean = true;
   const [inputText, setInputText] = useState("");
