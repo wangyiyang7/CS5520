@@ -13,7 +13,7 @@ export default function GoalItem(props: { item: Goal; delete: () => void }) {
 }
 
 export function DeleteAll(props: { deleteAll: () => void }) {
-  console.log("delete all");
+  //console.log("delete all");
   return (
     <View style={{ marginTop: 10 }}>
       <Button

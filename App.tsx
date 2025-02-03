@@ -13,7 +13,8 @@ import Header from "./components/Header";
 import Input from "./components/Input";
 import React, { useState } from "react";
 import GoalItem, { DeleteAll, Separator } from "./components/GoalItem";
-import { app } from "./Firebase/firebaseSetup";
+import { database } from "./Firebase/firebaseSetup";
+import { goalData, writeToDB } from "./Firebase/firestoreHelper";
 
 export interface Goal {
   id: number;
@@ -21,7 +22,7 @@ export interface Goal {
 }
 
 export default function App() {
-  //console.log(app);
+  //console.log(database);
   const appName = "Balding APP";
   let autofocus: boolean = true;
   const [inputText, setInputText] = useState("");
@@ -38,6 +39,8 @@ export default function App() {
     setGoalList((prev) => {
       return [...prev, newGoal];
     });
+    let newGoal_: goalData = { text: inputText };
+    writeToDB(newGoal_, "goals");
   }
 
   function handleVisibleTrue() {
@@ -51,7 +54,7 @@ export default function App() {
 
   function handleDelete(deleteNum: number) {
     const newGoalList = goalList.filter((x) => x.id != deleteNum);
-    console.log(newGoalList);
+    //console.log(newGoalList);
     setGoalList(newGoalList);
   }
 
