@@ -13,6 +13,7 @@ import Header from "./components/Header";
 import Input from "./components/Input";
 import React, { useState } from "react";
 import GoalItem, { DeleteAll, Separator } from "./components/GoalItem";
+import { app } from "./Firebase/firebaseSetup";
 
 export interface Goal {
   id: number;
@@ -20,6 +21,7 @@ export interface Goal {
 }
 
 export default function App() {
+  console.log(app);
   const appName = "Balding APP";
   let autofocus: boolean = true;
   const [inputText, setInputText] = useState("");
