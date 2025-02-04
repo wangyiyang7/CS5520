@@ -14,7 +14,7 @@ import Input from "./components/Input";
 import React, { useEffect, useState } from "react";
 import GoalItem, { DeleteAll, Separator } from "./components/GoalItem";
 import { database } from "./Firebase/firebaseSetup";
-import { goalData, writeToDB } from "./Firebase/firestoreHelper";
+import { deleteFromDB, goalData, writeToDB } from "./Firebase/firestoreHelper";
 import {
   collection,
   deleteDoc,
@@ -37,32 +37,35 @@ export default function App() {
   const [goalList, setGoalList] = useState<Goal[]>([]);
 
   useEffect(() => {
-    onSnapshot(collection(database, "goals"), (querySnapshot) => {
-      if (querySnapshot.empty) {
-        setGoalList([]);
-        console.log("empty");
-      } else {
-        let goalsArray: Goal[] = [];
-        querySnapshot.forEach((doc) => {
-          goalsArray.push({ ...(doc.data() as goalData), id: doc.id });
-        });
-        setGoalList(goalsArray);
-        console.log(goalsArray);
+    const unsubscribe = onSnapshot(
+      collection(database, "goals"),
+      (querySnapshot) => {
+        if (querySnapshot.empty) {
+          setGoalList([]);
+          console.log("empty");
+        } else {
+          let goalsArray: Goal[] = [];
+          querySnapshot.forEach((doc) => {
+            goalsArray.push({ ...(doc.data() as goalData), id: doc.id });
+          });
+          setGoalList(goalsArray);
+          console.log(goalsArray);
+        }
       }
-    });
-    // return () => unsubscribe();
+    );
+    return () => unsubscribe();
   }, []);
 
   //function handleInputData(inputText: string) {
   //setInputText(inputText);
   function handleInputData(inputText: string) {
     setInputText(inputText);
-    let newGoal: Goal = { text: inputText, id: Math.random() };
+    //let newGoal: Goal = { text: inputText, id: Math.random().toString() };
     //setGoalList([...goalList, newGoal]);
     setVisible(false);
-    setGoalList((prev) => {
-      return [...prev, newGoal];
-    });
+    //setGoalList((prev) => {
+    //   return [...prev, newGoal];
+    // });
     let newGoal_: goalData = { text: inputText };
     writeToDB(newGoal_, "goals");
   }
@@ -77,15 +80,10 @@ export default function App() {
   }
 
   function handleDelete(deleteNum: string) {
-    const newGoalList = goalList.filter((x) => x.id != deleteNum);
+    // const newGoalList = goalList.filter((x) => x.id != deleteNum);
     //console.log(newGoalList);
-    setGoalList(newGoalList);
-  }
-
-  function deleteFromDB(id: string, collectionName: string) {
-    try {
-      deleteDoc(doc(database, collectionName, id));
-    } catch (e) {}
+    // setGoalList(newGoalList);
+    deleteFromDB(deleteNum, "goals");
   }
 
   function handleDeleteAll() {
