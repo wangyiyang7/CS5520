@@ -14,7 +14,7 @@ import Input from "./components/Input";
 import React, { useEffect, useState } from "react";
 import GoalItem, { DeleteAll, Separator } from "./components/GoalItem";
 import { database } from "./Firebase/firebaseSetup";
-import { deleteFromDB, goalData, writeToDB } from "./Firebase/firestoreHelper";
+import { deleteFromDB, GoalData, writeToDB } from "./Firebase/firestoreHelper";
 import {
   collection,
   deleteDoc,
@@ -29,7 +29,7 @@ export interface Goal {
 }
 
 export default function App() {
-  //console.log(database);
+  console.log(database);
   const appName = "Balding APP";
   let autofocus: boolean = true;
   const [inputText, setInputText] = useState("");
