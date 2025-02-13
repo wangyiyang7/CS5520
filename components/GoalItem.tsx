@@ -2,12 +2,23 @@
 import { Alert, Button, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { Goal } from "@/App";
+import { Link, router } from "expo-router";
 
 export default function GoalItem(props: { item: Goal; delete: () => void }) {
   return (
     <View style={styles.userTyped}>
       <Text style={{ fontSize: 80 }}>{props.item.text}</Text>
       <Button title="x" onPress={() => props.delete()} />
+      {/*<Link asChild href={`/goals/${props.item.id}?sort="asc"`}>
+        <Button title="info" />
+        
+      </Link>*/}
+      <Button
+        title="info"
+        onPress={() => {
+          router.navigate(`/goals/${props.item.id}`);
+        }}
+      />
     </View>
   );
 }

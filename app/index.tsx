@@ -9,12 +9,12 @@ import {
   Text,
   View,
 } from "react-native";
-import Header from "./components/Header";
-import Input from "./components/Input";
+import Header from "../components/Header";
+import Input from "../components/Input";
 import React, { useEffect, useState } from "react";
-import GoalItem, { DeleteAll, Separator } from "./components/GoalItem";
-import { database } from "./Firebase/firebaseSetup";
-import { deleteFromDB, GoalData, writeToDB } from "./Firebase/firestoreHelper";
+import GoalItem, { DeleteAll, Separator } from "../components/GoalItem";
+import { database } from "../Firebase/firebaseSetup";
+import { deleteFromDB, goalData, writeToDB } from "../Firebase/firestoreHelper";
 import {
   collection,
   deleteDoc,
@@ -29,7 +29,7 @@ export interface Goal {
 }
 
 export default function App() {
-  console.log(database);
+  //console.log(database);
   const appName = "Balding APP";
   let autofocus: boolean = true;
   const [inputText, setInputText] = useState("");
@@ -49,7 +49,7 @@ export default function App() {
             goalsArray.push({ ...(doc.data() as goalData), id: doc.id });
           });
           setGoalList(goalsArray);
-          console.log(goalsArray);
+          //console.log(goalsArray);
         }
       }
     );
