@@ -1,81 +1,60 @@
-/*rnfs*/
-import { Alert, Button, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text } from "react-native";
 import React from "react";
+import { router } from "expo-router";
 import { Goal } from "@/App";
-import { Link, router } from "expo-router";
+import PressableButton from "./PressableButton";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
-export default function GoalItem(props: { item: Goal; delete: () => void }) {
+interface GoalItemProps {
+  goalObj: Goal;
+  deleteHandler: (deletedId: string) => void;
+}
+
+export default function GoalItem({ goalObj, deleteHandler }: GoalItemProps) {
   return (
-    <View style={styles.userTyped}>
-      <Text style={{ fontSize: 80 }}>{props.item.text}</Text>
-      <Button title="x" onPress={() => props.delete()} />
-      {/*<Link asChild href={`/goals/${props.item.id}?sort="asc"`}>
-        <Button title="info" />
-        
-      </Link>*/}
-      <Button
-        title="info"
-        onPress={() => {
-          router.navigate(`/goals/${props.item.id}`);
+    <Pressable
+      android_ripple={styles.androidRipple}
+      style={({ pressed }) => {
+        return [styles.textContainer, pressed && styles.pressed];
+      }}
+      onPress={() => {
+        router.navigate(`/goals/${goalObj.id}`);
+      }}
+    >
+      <Text style={styles.text}>{goalObj.text} </Text>
+      <PressableButton
+        pressedHandler={() => {
+          //pass the id
+          deleteHandler(goalObj.id);
         }}
-      />
-    </View>
+        pressedStyle={styles.pressed}
+        componentStyle={styles.deleteIcon}
+      >
+        <Ionicons name="trash" size={24} color="black" />
+      </PressableButton>
+    </Pressable>
   );
 }
 
-export function DeleteAll(props: { deleteAll: () => void }) {
-  //console.log("delete all");
-  return (
-    <View style={{ marginTop: 10 }}>
-      <Button
-        title="delete all"
-        onPress={() => {
-          Alert.alert("Delete All", "Are you sure?", [
-            {
-              text: "Cancel",
-              onPress: () => {},
-              style: "cancel",
-            },
-            {
-              text: "OK",
-              onPress: () => {
-                props.deleteAll();
-              },
-            },
-          ]);
-        }}
-      />
-    </View>
-  );
-}
-
-export const Separator = () => <View style={styles.separator} />;
-
-/*
-export default function GoalItem(props: { item: Goal; delete: Function }) {
-  return (
-    <View style={styles.userTyped}>
-      <Text style={{ fontSize: 80 }}>{props.item.text}</Text>
-      <Button title="x" onPress={() => props.delete(props.item.id)} />
-    </View>
-  );
-}
-*/
 const styles = StyleSheet.create({
-  userTyped: {
-    //marginTop: 30,
-    backgroundColor: "#fff8dc",
-    borderRadius: 5,
-    padding: 10,
-    fontSize: 20,
-    //borderWidth: 1,
+  textContainer: {
     flexDirection: "row",
+    borderRadius: 5,
+    backgroundColor: "#aaa",
+    padding: 10,
     alignItems: "center",
+    marginVertical: 10,
   },
-  separator: {
-    marginTop: 10,
-    marginBottom: 10,
-    borderWidth: 1,
-    backgroundColor: "#CED0CE",
+  text: {
+    color: "purple",
+    fontSize: 20,
+  },
+  pressed: {
+    backgroundColor: "grey",
+    opacity: 0.5,
+  },
+  androidRipple: { color: "red" },
+  deleteIcon: {
+    backgroundColor: "#aaa",
   },
 });

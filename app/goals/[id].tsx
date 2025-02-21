@@ -1,12 +1,13 @@
 import { View, Text, Button, StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Stack, useLocalSearchParams } from "expo-router";
-import { GoalData, readDocFromDB } from "../../Firebase/firestoreHelper";
+import { GoalData, readDocFromDB, updateDB } from "@/Firebase/firestoreHelper";
 
 const GoalDetails = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [goal, setGoal] = useState<GoalData | null>(null);
   const [warning, setWarning] = useState(false);
+
   useEffect(() => {
     async function getData() {
       try {
@@ -21,7 +22,9 @@ const GoalDetails = () => {
 
   function warningHandler() {
     setWarning(true);
+    updateDB(id, "goals", { warning: true });
   }
+
   return (
     <View>
       <Stack.Screen

@@ -1,4 +1,11 @@
-import { collection, addDoc, deleteDoc, doc, getDoc } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  setDoc,
+} from "firebase/firestore";
 import { database } from "./firebaseSetup";
 
 export interface GoalData {
@@ -9,7 +16,7 @@ export async function writeToDB(data: GoalData, collectionName: string) {
   try {
     await addDoc(collection(database, collectionName), data);
   } catch (err) {
-    //console.log(err);
+    throw err;
   }
 }
 
@@ -29,5 +36,17 @@ export async function readDocFromDB(id: string, collectionName: string) {
     return null;
   } catch (e) {
     console.error("Error reading document: ", e);
+  }
+}
+
+export async function updateDB(
+  id: string,
+  collectionName: string,
+  data: { [key: string]: any }
+) {
+  try {
+    await setDoc(doc(database, collectionName, id), data, { merge: true });
+  } catch (e) {
+    console.error("Error updating document: ", e);
   }
 }

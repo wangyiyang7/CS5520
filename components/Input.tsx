@@ -1,130 +1,147 @@
 import {
+  Alert,
+  Button,
+  Image,
+  Modal,
   StyleSheet,
-  View,
   Text,
   TextInput,
-  Button,
-  Modal,
-  Alert,
-  Image,
+  View,
 } from "react-native";
 import React from "react";
 import { useState } from "react";
-/*
+
 interface InputProps {
-  x: boolean;
-  inputHandler: (data: string)=>void;
-}
-*/
-const Input = (props: {
-  x: boolean;
-  inputHandler: Function;
+  textInputFocus: boolean;
+  inputHandler: (data: string) => void;
   modalVisible: boolean;
-  dismissModal: Function;
-}) => {
-  const [txt, setTxt] = useState("");
+  dismissModal: () => void;
+}
+export default function Input({
+  textInputFocus,
+  inputHandler,
+  modalVisible,
+  dismissModal,
+}: InputProps) {
+  const [text, setText] = useState("");
+  const [blur, setBlur] = useState(false);
+  const minimumChar = 3;
 
-  const [isFocus, setFocus] = useState(false);
-
-  function handleConfirm() {
-    props.inputHandler(txt);
-    setTxt("");
+  function updateText(changedText: string) {
+    // update the text state
+    setText(changedText);
   }
-
+  function handleConfirm() {
+    // call the callback from App
+    // pass the data that user typed
+    inputHandler(text);
+    setText("");
+  }
   function handleCancel() {
-    Alert.alert("Alert!", "Sure to cancel?", [
+    // hide the modal
+    Alert.alert("Cancel", "Are you sure you want to cancel", [
+      { text: "cancel", style: "cancel" },
       {
-        text: "Cancel",
-      },
-      {
-        text: "OK",
+        text: "ok",
         onPress: () => {
-          props.dismissModal();
-          setTxt("");
-          //console.log("!!!" + props.modalVisible);
+          setText("");
+          dismissModal();
         },
       },
     ]);
   }
-
   return (
-    <Modal
-      visible={props.modalVisible}
-      animationType="slide"
-      transparent={true}
-    >
-      <View style={styles.modalView}>
-        <Image
-          style={styles.image}
-          alt="text description of the image"
-          source={{
-            uri: "https://cdn-icons-png.flaticon.com/512/2617/2617812.png",
-          }}
-        />
-        <Image
-          style={styles.image}
-          alt="text description of the image"
-          source={require("./2617812.png")}
-        />
-        <TextInput
-          style={{
-            borderWidth: 2,
-            marginTop: 20,
-            padding: 10,
-            borderColor: "purple",
-          }}
-          placeholder="Type something..."
-          onChangeText={(changedTxt: string) => setTxt(changedTxt)}
-          value={txt}
-          onFocus={() => setFocus(true)}
-          onBlur={() => setFocus(false)}
-          autoFocus={props.x}
-        />
-        {isFocus && txt.length > 0 ? (
-          <Text>{txt.length}</Text>
-        ) : !isFocus && txt.length > 0 ? (
-          <Text>
-            {txt.length >= 3
-              ? "Thank you"
-              : "Please type more than 3 characters"}
-          </Text>
-        ) : null}
-        <View style={styles.row}>
-          <Button
-            title="Confirm"
-            onPress={handleConfirm}
-            disabled={txt.length < 3}
+    <Modal transparent={true} visible={modalVisible} animationType="slide">
+      <View style={styles.container}>
+        <View style={styles.modalContainer}>
+          <Image
+            source={{
+              uri: "https://cdn-icons-png.flaticon.com/512/2617/2617812.png",
+            }}
+            style={styles.image}
+            alt="Image of a an arrow"
           />
-
-          <Button title="Cancel" onPress={handleCancel} />
+          <Image
+            source={require("../assets/goal.png")}
+            style={styles.image}
+            alt="Image of a an arrow"
+          />
+          <TextInput
+            style={styles.input}
+            autoFocus={textInputFocus}
+            value={text}
+            onChangeText={updateText}
+            placeholder="Type something"
+            onBlur={() => {
+              setBlur(true);
+            }}
+            onFocus={() => {
+              setBlur(false);
+            }}
+          />
+          {blur ? (
+            text.length >= 3 ? (
+              <Text style={styles.text}>Thank you</Text>
+            ) : (
+              <Text style={styles.text}>
+                Please type more than 3 characters
+              </Text>
+            )
+          ) : (
+            text && <Text style={styles.text}>{text.length}</Text>
+          )}
+          <View style={styles.buttonsRow}>
+            <View style={styles.buttonContainer}>
+              <Button title="Cancel" onPress={handleCancel} />
+            </View>
+            <View style={styles.buttonContainer}>
+              <Button
+                disabled={text.length < minimumChar}
+                title="Confirm"
+                onPress={handleConfirm}
+              />
+            </View>
+          </View>
         </View>
       </View>
     </Modal>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  modalView: {
+  container: {
     flex: 1,
-    backgroundColor: "#dcdcdc",
-    borderRadius: 20,
-    //padding: 50,
-    justifyContent: "center",
+    // backgroundColor: "#fff",
     alignItems: "center",
-    marginHorizontal: 80,
-    marginVertical: 250,
+    justifyContent: "center",
   },
-  row: {
+  modalContainer: {
+    // backgroundColor: "#eee",
+    borderRadius: 10,
+    alignItems: "center",
+    backgroundColor: "#aaa",
+  },
+  input: {
+    borderColor: "purple",
+    borderWidth: 2,
+    padding: 5,
+    color: "blue",
+    margin: 5,
+  },
+  buttonContainer: {
+    width: "30%",
+    margin: 10,
+  },
+  text: {
+    color: "purple",
+    margin: 5,
+  },
+  buttonsRow: {
     flexDirection: "row",
-    alignSelf: "stretch",
-    justifyContent: "space-evenly",
-    marginTop: 30,
-    //borderWidth: 1,
   },
   image: {
     width: 100,
     height: 100,
+    marginVertical: 5,
   },
 });
-
-export default Input;
