@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text } from "react-native";
+import { Alert, Pressable, StyleSheet, Text } from "react-native";
 import React from "react";
 import { router } from "expo-router";
 import { Goal } from "@/App";
@@ -8,9 +8,14 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 interface GoalItemProps {
   goalObj: Goal;
   deleteHandler: (deletedId: string) => void;
+  separators: any;
 }
 
-export default function GoalItem({ goalObj, deleteHandler }: GoalItemProps) {
+export default function GoalItem({
+  goalObj,
+  deleteHandler,
+  separators,
+}: GoalItemProps) {
   return (
     <Pressable
       android_ripple={styles.androidRipple}
@@ -18,8 +23,22 @@ export default function GoalItem({ goalObj, deleteHandler }: GoalItemProps) {
         return [styles.textContainer, pressed && styles.pressed];
       }}
       onPress={() => {
+        separators.highlight();
         router.navigate(`/goals/${goalObj.id}`);
       }}
+      onLongPress={() => {
+        separators.highlight();
+        Alert.alert("Delete", "Are you sure you want to delete this goal?", [
+          {
+            text: "Yes",
+            onPress: () => {
+              deleteHandler(goalObj.id);
+            },
+          },
+          { text: "No", style: "cancel" },
+        ]);
+      }}
+      onPressOut={separators.unhighlight}
     >
       <Text style={styles.text}>{goalObj.text} </Text>
       <PressableButton
