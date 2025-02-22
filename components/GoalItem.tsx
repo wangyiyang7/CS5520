@@ -22,12 +22,12 @@ export default function GoalItem({
       style={({ pressed }) => {
         return [styles.textContainer, pressed && styles.pressed];
       }}
+      onPressIn={separators.highlight}
+      onPressOut={separators.unhighlight}
       onPress={() => {
-        separators.highlight();
         router.navigate(`/goals/${goalObj.id}`);
       }}
       onLongPress={() => {
-        separators.highlight();
         Alert.alert("Delete", "Are you sure you want to delete this goal?", [
           {
             text: "Yes",
@@ -38,7 +38,6 @@ export default function GoalItem({
           { text: "No", style: "cancel" },
         ]);
       }}
-      onPressOut={separators.unhighlight}
     >
       <Text style={styles.text}>{goalObj.text} </Text>
       <PressableButton
