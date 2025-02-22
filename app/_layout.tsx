@@ -17,7 +17,7 @@ export default function Layout() {
       <Stack.Screen
         name="goals/[id]"
         options={{
-          headerTitle: "what?",
+          headerTitle: "Goal Details",
         }}
       />
     </Stack>

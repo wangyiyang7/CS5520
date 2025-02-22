@@ -1,93 +1,81 @@
 import { StatusBar } from "expo-status-bar";
 import {
+  Alert,
   Button,
   FlatList,
-  Platform,
   SafeAreaView,
-  ScrollView,
   StyleSheet,
   Text,
   View,
 } from "react-native";
-import Header from "../components/Header";
-import Input from "../components/Input";
+import Header from "@/components/Header";
+import Input from "@/components/Input";
 import React, { useEffect, useState } from "react";
-import GoalItem, { DeleteAll, Separator } from "../components/GoalItem";
-import { database } from "../Firebase/firebaseSetup";
-import { deleteFromDB, goalData, writeToDB } from "../Firebase/firestoreHelper";
-import {
-  collection,
-  deleteDoc,
-  doc,
-  onSnapshot,
-  QuerySnapshot,
-} from "firebase/firestore";
+import GoalItem from "@/components/GoalItem";
+import { database } from "@/Firebase/firebaseSetup";
+import { deleteFromDB, GoalData, writeToDB } from "@/Firebase/firestoreHelper";
+import PressableButton from "@/components/PressableButton";
+import { collection, onSnapshot } from "firebase/firestore";
 
-export interface Goal {
+export interface Goal extends GoalData {
   id: string;
-  text: string;
 }
 
 export default function App() {
-  //console.log(database);
   const appName = "Balding APP";
-  let autofocus: boolean = true;
-  const [inputText, setInputText] = useState("");
-  const [modalVisible, setVisible] = useState(false);
-  const [goalList, setGoalList] = useState<Goal[]>([]);
-
+  const [goals, setGoals] = useState<Goal[]>([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   useEffect(() => {
+    //start the listener on real time changes on goals collection
     const unsubscribe = onSnapshot(
       collection(database, "goals"),
       (querySnapshot) => {
+        //check if the querySnapshot is empty
         if (querySnapshot.empty) {
-          setGoalList([]);
-          console.log("empty");
+          setGoals([]);
         } else {
-          let goalsArray: Goal[] = [];
-          querySnapshot.forEach((doc) => {
-            goalsArray.push({ ...(doc.data() as goalData), id: doc.id });
+          let newArrayOfGoals: Goal[] = [];
+          querySnapshot.forEach((docSnapshot) => {
+            newArrayOfGoals.push({
+              ...(docSnapshot.data() as GoalData),
+              id: docSnapshot.id,
+            });
           });
-          setGoalList(goalsArray);
-          //console.log(goalsArray);
+
+          setGoals(newArrayOfGoals);
         }
       }
     );
-    return () => unsubscribe();
+    //return a cleanup function to stop the listener
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
-  //function handleInputData(inputText: string) {
-  //setInputText(inputText);
-  function handleInputData(inputText: string) {
-    setInputText(inputText);
-    //let newGoal: Goal = { text: inputText, id: Math.random().toString() };
-    //setGoalList([...goalList, newGoal]);
-    setVisible(false);
-    //setGoalList((prev) => {
-    //   return [...prev, newGoal];
-    // });
-    let newGoal_: goalData = { text: inputText };
-    writeToDB(newGoal_, "goals");
+  function handleDeleteGoal(deletedId: string) {
+    deleteFromDB(deletedId, "goals");
   }
 
-  function handleVisibleTrue() {
-    setVisible(true);
+  function handleInputData(data: string) {
+    let newGoal: GoalData = { text: data };
+    writeToDB(newGoal, "goals");
+    setIsModalVisible(false);
   }
 
-  function handleVisibileFlase() {
-    setVisible(false);
-    //console.log("!!!??" + modalVisible);
+  function dismissModal() {
+    setIsModalVisible(false);
   }
 
-  function handleDelete(deleteNum: string) {
-    // const newGoalList = goalList.filter((x) => x.id != deleteNum);
-    //console.log(newGoalList);
-    // setGoalList(newGoalList);
-    deleteFromDB(deleteNum, "goals");
-  }
-
-  function handleDeleteAll() {
-    setGoalList([]);
+  function deleteAll() {
+    Alert.alert("Delete All", "Are you sure you want to delete all goals?", [
+      {
+        text: "Yes",
+        onPress: () => {
+          setGoals([]);
+        },
+      },
+      { text: "No", style: "cancel" },
+    ]);
   }
 
   return (
@@ -95,68 +83,47 @@ export default function App() {
       <StatusBar style="auto" />
       <View style={styles.topContainer}>
         <Header name={appName} />
-        <View style={styles.buttonContainer}>
-          <Button title="Add a goal" onPress={handleVisibleTrue} />
-        </View>
+        <Input
+          textInputFocus={true}
+          inputHandler={handleInputData}
+          modalVisible={isModalVisible}
+          dismissModal={dismissModal}
+        />
+        <PressableButton pressedHandler={() => setIsModalVisible(true)}>
+          <Text style={styles.addGoalButton}>Add a Goal</Text>
+        </PressableButton>
       </View>
-      <Input
-        x={autofocus}
-        inputHandler={handleInputData}
-        modalVisible={modalVisible}
-        dismissModal={handleVisibileFlase}
-      />
+
       <View style={styles.bottomContainer}>
         <FlatList
-          contentContainerStyle={{ alignItems: "center" }}
-          data={goalList}
+          ItemSeparatorComponent={() => (
+            <View
+              style={{
+                height: 5,
+                backgroundColor: "gray",
+              }}
+            />
+          )}
           ListEmptyComponent={
-            <Text style={{ marginTop: 10, fontSize: 30, color: "purple" }}>
-              No goals to show
-            </Text>
+            <Text style={styles.header}>No goals to show</Text>
           }
-          ListHeaderComponent={() =>
-            goalList.length > 0 && (
-              <Text
-                style={{
-                  marginTop: 10,
-                  marginBottom: 10,
-                  fontSize: 30,
-                  color: "purple",
-                }}
-              >
-                My Goal List
-              </Text>
-            )
+          ListHeaderComponent={
+            goals.length > 0 ? (
+              <Text style={styles.header}>My Goals List</Text>
+            ) : null
           }
-          ListFooterComponent={() =>
-            goalList.length > 0 && <DeleteAll deleteAll={handleDeleteAll} />
+          ListFooterComponent={
+            goals.length ? (
+              <Button title="Delete all" onPress={deleteAll} />
+            ) : null
           }
-          ItemSeparatorComponent={Separator}
+          contentContainerStyle={styles.centeredHorizontal}
+          data={goals}
           renderItem={({ item }) => {
-            return (
-              <View>
-                {/*
-                  <View style={styles.userTyped}>
-                    <Text style={{ fontSize: 80 }}>{item.text}</Text>
-                  </View>
-                  */}
-
-                <GoalItem item={item} delete={() => handleDelete(item.id)} />
-              </View>
-            );
+            //pass the received item to GoalItem component as a prop
+            return <GoalItem goalObj={item} deleteHandler={handleDeleteGoal} />;
           }}
         />
-        {/*
-          <ScrollView contentContainerStyle={{ alignItems: "center" }}>
-            {goalList.map((x) => {
-              return (
-                <View key={x.id} style={styles.userTyped}>
-                  <Text style={{ fontSize: 80 }}>{x.text}</Text>
-                </View>
-              );
-            })}
-          </ScrollView>
-          */}
       </View>
     </SafeAreaView>
   );
@@ -164,27 +131,31 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-  },
-  buttonContainer: {
-    width: "30%",
+    flex: 2,
+    backgroundColor: "#fff",
+    justifyContent: "center",
   },
   topContainer: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "space-around",
   },
   bottomContainer: {
     flex: 4,
     backgroundColor: "#dcd",
-    //alignItems: "center",
+    // alignItems: "center",
   },
-  userTyped: {
-    marginTop: 30,
-    backgroundColor: "#fff8dc",
-    borderRadius: 5,
-    padding: 10,
-    fontSize: 20,
-    //borderWidth: 1,
+  centeredHorizontal: {
+    alignItems: "center",
+  },
+  header: {
+    color: "indigo",
+    fontSize: 25,
+    marginTop: 10,
+  },
+  addGoalButton: {
+    padding: 5,
+    fontSize: 15,
+    color: "white",
   },
 });
