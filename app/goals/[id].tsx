@@ -45,7 +45,7 @@ const GoalDetails = () => {
         }}
       />
       <Text style={warning && styles.warningText}>Details of {goal?.text}</Text>
-      <GoalUsers />
+      <GoalUsers goalID={id} />
     </View>
   );
 };
