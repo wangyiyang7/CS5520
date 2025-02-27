@@ -4,6 +4,7 @@ import { Stack, useLocalSearchParams } from "expo-router";
 import { GoalData, readDocFromDB, updateDB } from "@/Firebase/firestoreHelper";
 import PressableButton from "@/components/PressableButton";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import { GoalUsers } from "@/components/GoalUsers";
 
 const GoalDetails = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -44,6 +45,7 @@ const GoalDetails = () => {
         }}
       />
       <Text style={warning && styles.warningText}>Details of {goal?.text}</Text>
+      <GoalUsers goalID={id} />
     </View>
   );
 };
