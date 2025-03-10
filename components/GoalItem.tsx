@@ -39,7 +39,7 @@ export default function GoalItem({
         ]);
       }}
     >
-      <Text style={styles.text}>{goalObj.text} </Text>
+      <Text style={styles.text}>{goalObj.id} </Text>
       <PressableButton
         pressedHandler={() => {
           //pass the id
