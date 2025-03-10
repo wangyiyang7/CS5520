@@ -13,9 +13,10 @@ import Input from "@/components/Input";
 import React, { useEffect, useState } from "react";
 import GoalItem from "@/components/GoalItem";
 import { database } from "@/Firebase/firebaseSetup";
-import { deleteFromDB, GoalData, writeToDB } from "@/Firebase/firestoreHelper";
+import { deleteFromDB, writeToDB } from "@/Firebase/firestoreHelper";
 import PressableButton from "@/components/PressableButton";
 import { collection, onSnapshot } from "firebase/firestore";
+import { GoalData } from "@/types";
 
 export interface Goal extends GoalData {
   id: string;
