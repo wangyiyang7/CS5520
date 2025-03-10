@@ -1,10 +1,11 @@
 import { StyleSheet, Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
-import { Slot } from "expo-router";
+import { router, Slot, Stack, useSegments } from "expo-router";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/Firebase/firebaseSetup";
 
 const _layout = () => {
+  const segments = useSegments();
   const [userLoggedIn, setUserLoggedIn] = useState(false);
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -21,7 +22,24 @@ const _layout = () => {
       unsubscribe();
     };
   }, []);
-  return <Slot />;
+
+  useEffect(() => {
+    if (userLoggedIn && segments[0] === "(auth)") {
+      router.replace("/(protected)/");
+    } else if (!userLoggedIn && segments[0] === "(protected)") {
+      router.replace("/(auth)/login");
+    }
+  }, [userLoggedIn]);
+
+  return (
+    <Stack screenOptions={{ headerShown: false, animation: "fade" }}>
+      <Stack.Screen name="(auth)" options={{ animation: "slide_from_left" }} />
+      <Stack.Screen
+        name="(protected)"
+        options={{ animation: "slide_from_right" }}
+      />
+    </Stack>
+  );
 };
 
 export default _layout;

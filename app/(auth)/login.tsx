@@ -30,7 +30,10 @@ const login = () => {
         onChangeText={setPassword}
       />
       <Button title="Login" onPress={handleLogin} />
-      <Button title="Register" onPress={() => router.push("/(auth)/signup")} />
+      <Button
+        title="Register"
+        onPress={() => router.replace("/(auth)/signup")}
+      />
     </View>
   );
 };

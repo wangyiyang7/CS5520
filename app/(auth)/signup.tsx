@@ -40,7 +40,7 @@ const signup = () => {
       <Button title="Sign Up" onPress={handleSignUp} />
       <Button
         title="Back to Login"
-        onPress={() => router.push("/(auth)/login")}
+        onPress={() => router.replace("/(auth)/login")}
       />
     </View>
   );
