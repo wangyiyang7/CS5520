@@ -1,6 +1,7 @@
 export interface GoalData {
   text: string;
   warning?: boolean;
+  owner: string | null;
 }
 
 export interface User {

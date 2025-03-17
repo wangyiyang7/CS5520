@@ -12,10 +12,10 @@ import Header from "@/components/Header";
 import Input from "@/components/Input";
 import React, { useEffect, useState } from "react";
 import GoalItem from "@/components/GoalItem";
-import { database } from "@/Firebase/firebaseSetup";
+import { auth, database } from "@/Firebase/firebaseSetup";
 import { deleteFromDB, writeToDB } from "@/Firebase/firestoreHelper";
 import PressableButton from "@/components/PressableButton";
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { GoalData } from "@/types";
 
 export interface Goal extends GoalData {
@@ -27,9 +27,13 @@ export default function App() {
   const [goals, setGoals] = useState<Goal[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   useEffect(() => {
+    if (!auth.currentUser) return;
     //start the listener on real time changes on goals collection
     const unsubscribe = onSnapshot(
-      collection(database, "goals"),
+      query(
+        collection(database, "goals"),
+        where("owner", "==", auth.currentUser?.uid)
+      ),
       (querySnapshot) => {
         //check if the querySnapshot is empty
         if (querySnapshot.empty) {
@@ -45,7 +49,8 @@ export default function App() {
 
           setGoals(newArrayOfGoals);
         }
-      }
+      },
+      (error) => {}
     );
     //return a cleanup function to stop the listener
     return () => {
@@ -58,7 +63,10 @@ export default function App() {
   }
 
   function handleInputData(data: string) {
-    let newGoal: GoalData = { text: data };
+    let newGoal: GoalData = {
+      text: data,
+      owner: auth.currentUser?.uid || null,
+    };
     writeToDB(newGoal, "goals");
     setIsModalVisible(false);
   }
