@@ -16,7 +16,7 @@ import { auth, database } from "@/Firebase/firebaseSetup";
 import { deleteFromDB, writeToDB } from "@/Firebase/firestoreHelper";
 import PressableButton from "@/components/PressableButton";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
-import { GoalData } from "@/types";
+import { GoalData, userInput } from "@/types";
 
 export interface Goal extends GoalData {
   id: string;
@@ -26,6 +26,8 @@ export default function App() {
   const appName = "Balding APP";
   const [goals, setGoals] = useState<Goal[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [uri, setURI] = useState("");
+
   useEffect(() => {
     if (!auth.currentUser) return;
     //start the listener on real time changes on goals collection
@@ -62,10 +64,11 @@ export default function App() {
     deleteFromDB(deletedId, "goals");
   }
 
-  function handleInputData(data: string) {
+  function handleInputData(data: userInput) {
     let newGoal: GoalData = {
-      text: data,
+      text: data.text,
       owner: auth.currentUser?.uid || null,
+      uri: data.imageUri,
     };
     writeToDB(newGoal, "goals");
     setIsModalVisible(false);
