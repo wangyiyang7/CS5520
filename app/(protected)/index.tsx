@@ -12,11 +12,11 @@ import Header from "@/components/Header";
 import Input from "@/components/Input";
 import React, { useEffect, useState } from "react";
 import GoalItem from "@/components/GoalItem";
-import { database } from "@/Firebase/firebaseSetup";
+import { auth, database } from "@/Firebase/firebaseSetup";
 import { deleteFromDB, writeToDB } from "@/Firebase/firestoreHelper";
 import PressableButton from "@/components/PressableButton";
-import { collection, onSnapshot } from "firebase/firestore";
-import { GoalData } from "@/types";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
+import { GoalData, userInput } from "@/types";
 
 export interface Goal extends GoalData {
   id: string;
@@ -26,10 +26,16 @@ export default function App() {
   const appName = "Balding APP";
   const [goals, setGoals] = useState<Goal[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [uri, setURI] = useState("");
+
   useEffect(() => {
+    if (!auth.currentUser) return;
     //start the listener on real time changes on goals collection
     const unsubscribe = onSnapshot(
-      collection(database, "goals"),
+      query(
+        collection(database, "goals"),
+        where("owner", "==", auth.currentUser?.uid)
+      ),
       (querySnapshot) => {
         //check if the querySnapshot is empty
         if (querySnapshot.empty) {
@@ -45,7 +51,8 @@ export default function App() {
 
           setGoals(newArrayOfGoals);
         }
-      }
+      },
+      (error) => {}
     );
     //return a cleanup function to stop the listener
     return () => {
@@ -57,8 +64,12 @@ export default function App() {
     deleteFromDB(deletedId, "goals");
   }
 
-  function handleInputData(data: string) {
-    let newGoal: GoalData = { text: data };
+  function handleInputData(data: userInput) {
+    let newGoal: GoalData = {
+      text: data.text,
+      owner: auth.currentUser?.uid || null,
+      uri: data.imageUri,
+    };
     writeToDB(newGoal, "goals");
     setIsModalVisible(false);
   }

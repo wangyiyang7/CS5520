@@ -1,8 +1,9 @@
-import { StyleSheet, Text, View, TextInput, Button } from "react-native";
+import { StyleSheet, Text, View, TextInput, Button, Alert } from "react-native";
 import React, { useState } from "react";
 import { useRouter } from "expo-router";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/Firebase/firebaseSetup";
+import { FirebaseError } from "firebase/app";
 
 const login = () => {
   const [email, setEmail] = useState("");
@@ -13,17 +14,19 @@ const login = () => {
     // Handle login logic here
     console.log("Email:", email);
     console.log("Password:", password);
-
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Signed in
-        const user = userCredential.user;
-        // ...
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-      });
+    try {
+      const userCredential = signInWithEmailAndPassword(auth, email, password);
+    } catch (error) {
+      if (
+        error instanceof FirebaseError &&
+        "code" in error &&
+        "message" in error
+      ) {
+        if (error.code === "") {
+          Alert.alert("");
+        }
+      }
+    }
   };
 
   return (

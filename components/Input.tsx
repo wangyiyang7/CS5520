@@ -10,10 +10,12 @@ import {
 } from "react-native";
 import React from "react";
 import { useState } from "react";
+import ImageManager from "./ImageManager";
+import { userInput } from "@/types";
 
 interface InputProps {
   textInputFocus: boolean;
-  inputHandler: (data: string) => void;
+  inputHandler: (data: userInput) => void;
   modalVisible: boolean;
   dismissModal: () => void;
 }
@@ -25,6 +27,7 @@ export default function Input({
 }: InputProps) {
   const [text, setText] = useState("");
   const [blur, setBlur] = useState(false);
+  const [inputUri, setInputUri] = useState<string>("");
   const minimumChar = 3;
 
   function updateText(changedText: string) {
@@ -34,7 +37,7 @@ export default function Input({
   function handleConfirm() {
     // call the callback from App
     // pass the data that user typed
-    inputHandler(text);
+    inputHandler({ text: text, imageUri: inputUri });
     setText("");
   }
   function handleCancel() {
@@ -50,6 +53,11 @@ export default function Input({
       },
     ]);
   }
+
+  function imageURIHandler(uri: string) {
+    setInputUri(uri);
+  }
+
   return (
     <Modal transparent={true} visible={modalVisible} animationType="slide">
       <View style={styles.container}>
@@ -90,6 +98,7 @@ export default function Input({
           ) : (
             text && <Text style={styles.text}>{text.length}</Text>
           )}
+          <ImageManager imageUriHandler={imageURIHandler} />
           <View style={styles.buttonsRow}>
             <View style={styles.buttonContainer}>
               <Button title="Cancel" onPress={handleCancel} />
