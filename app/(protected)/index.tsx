@@ -12,11 +12,12 @@ import Header from "@/components/Header";
 import Input from "@/components/Input";
 import React, { useEffect, useState } from "react";
 import GoalItem from "@/components/GoalItem";
-import { auth, database } from "@/Firebase/firebaseSetup";
+import { auth, database, storage } from "@/Firebase/firebaseSetup";
 import { deleteFromDB, writeToDB } from "@/Firebase/firestoreHelper";
 import PressableButton from "@/components/PressableButton";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { GoalData, userInput } from "@/types";
+import { ref, uploadBytesResumable } from "firebase/storage";
 
 export interface Goal extends GoalData {
   id: string;
@@ -64,14 +65,36 @@ export default function App() {
     deleteFromDB(deletedId, "goals");
   }
 
-  function handleInputData(data: userInput) {
-    let newGoal: GoalData = {
-      text: data.text,
-      owner: auth.currentUser?.uid || null,
-      uri: data.imageUri,
-    };
-    writeToDB(newGoal, "goals");
-    setIsModalVisible(false);
+  async function fetchImage(uri: string) {
+    try {
+      const response = await fetch(uri);
+      if (!response.ok) {
+        throw new Error("");
+      }
+      const blob = await response.blob();
+      const imageName = uri.substring(uri.lastIndexOf("/") + 1);
+      const imageRef = ref(storage, `images/${imageName}`);
+      const uploadResult = await uploadBytesResumable(imageRef, blob);
+      return uploadResult.metadata.fullPath;
+    } catch (e) {}
+  }
+
+  async function handleInputData(data: userInput) {
+    try {
+      let storedImageUri;
+      if (data.imageUri != undefined) {
+        storedImageUri = await fetchImage(data.imageUri);
+      }
+      let newGoal: GoalData = {
+        text: data.text,
+        owner: auth.currentUser?.uid || null,
+      };
+      if (storedImageUri) {
+        newGoal.uri = storedImageUri;
+      }
+      writeToDB(newGoal, "goals");
+      setIsModalVisible(false);
+    } catch (e) {}
   }
 
   function dismissModal() {
