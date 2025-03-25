@@ -9,6 +9,8 @@ import { GoalData } from "@/types";
 import { storage } from "@/Firebase/firebaseSetup";
 import { getDownloadURL, ref } from "firebase/storage";
 
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+
 const GoalDetails = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [goal, setGoal] = useState<GoalData | null>(null);
@@ -24,12 +26,12 @@ const GoalDetails = () => {
           setGoal(data);
         }
 
-        if (data?.uri) {
+        if (data.uri) {
           const imageRef = ref(storage, data.uri);
-          const uri = await getDownloadURL(imageRef);
-          console.log(uri);
+          const downloadUrl = await getDownloadURL(imageRef);
+          console.log(downloadUrl);
 
-          setURL(uri);
+          setURL(downloadUrl);
         }
       } catch (e) {}
     }

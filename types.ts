@@ -33,3 +33,8 @@ export interface Geo {
 export interface GoalFromDB extends GoalData {
   id: string;
 }
+
+export interface LocationData {
+  latitude: number;
+  longitude: number;
+}
