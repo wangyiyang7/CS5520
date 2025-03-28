@@ -59,3 +59,5 @@ export async function updateDB(
     console.error("Error updating document: ", e);
   }
 }
+
+export { GoalData };
