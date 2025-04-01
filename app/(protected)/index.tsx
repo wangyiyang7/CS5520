@@ -23,6 +23,16 @@ export interface Goal extends GoalData {
   id: string;
 }
 
+import * as Notifications from "expo-notifications";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
+
 export default function App() {
   const appName = "Balding APP";
   const [goals, setGoals] = useState<Goal[]>([]);
