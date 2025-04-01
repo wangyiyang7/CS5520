@@ -31,7 +31,7 @@ export default function map() {
     // router.navigate(
     //   `profile?latitude=${selectedLocation?.latitude}&longitude=${selectedLocation?.longitude}`
     // );
-    router.navigate({
+    router.dismissTo({
       pathname: "profile",
       params: {
         latitude: selectedLocation?.latitude,

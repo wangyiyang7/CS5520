@@ -8,7 +8,6 @@ import {
 import React from "react";
 
 interface PressableButtonProps {
-  pressedHandler: () => void;
   pressedInHandler?: () => void;
   pressedStyle?: StyleProp<ViewStyle>;
   children: React.ReactNode;
@@ -16,7 +15,7 @@ interface PressableButtonProps {
 }
 export default function PressableButton({
   children,
-  pressedHandler,
+
   pressedStyle,
   componentStyle,
   pressedInHandler,
@@ -24,7 +23,7 @@ export default function PressableButton({
   return (
     <Pressable
       onPressIn={pressedInHandler}
-      onPress={pressedHandler}
+      onPress={pressedInHandler}
       style={({ pressed }) => {
         return [
           styles.defaultStyle,

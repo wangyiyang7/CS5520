@@ -22,8 +22,26 @@ export default function LocationManager() {
 
   const [permissionResponse, requestPermission] = useForegroundPermissions();
   const [location, setLocation] = useState<LocationData | null>(null);
+
+  useEffect(() => {
+    async function fetchUserData() {
+      if (auth?.currentUser?.uid) {
+        try {
+          const data = await readDocFromDB(auth.currentUser.uid, "users");
+          if (data?.address?.geo) {
+            setLocation({
+              latitude: parseFloat(data.address.geo.lat),
+              longitude: parseFloat(data.address.geo.lng),
+            });
+          }
+        } catch (e) {
+          console.log("Error in getting user data", e);
+        }
+      }
+    }
+    fetchUserData();
+  }, []);
   // if (params) update the location state variable
-  console.log("params :", params);
   useEffect(() => {
     // check if params is not {}
     if (params.latitude && params.longitude) {
@@ -38,24 +56,7 @@ export default function LocationManager() {
         ),
       });
     }
-  }, []);
-  useEffect(() => {
-    async function fetchUserData() {
-      if (auth.currentUser?.uid) {
-        try {
-          const data = await readDocFromDB(auth.currentUser.uid, "users");
-          if (data?.address?.geo) {
-            console.log(data?.address?.geo);
-            setLocation({
-              latitude: parseFloat(data.address.geo.lat),
-              longitude: parseFloat(data.address.geo.lng),
-            });
-          }
-        } catch (e) {}
-      }
-    }
-    fetchUserData;
-  }, []);
+  }, [params.latitude, params.longitude]);
 
   async function verifyPermission() {
     try {
@@ -114,7 +115,7 @@ export default function LocationManager() {
       {location && (
         <Image
           source={{
-            uri: `https://maps.googleapis.com/maps/api/staticmap?center=${location?.latitude},${location?.longitude}&zoom=14&size=400x200&maptype=roadmap&markers=color:red%7Clabel:L%7C${location?.latitude},${location?.longitude}&key=AIzaSyDq20JY7G-oJBkAsOyDH02bPXxwilakiMA`,
+            uri: `https://maps.googleapis.com/maps/api/staticmap?center=${location?.latitude},${location?.longitude}&zoom=14&size=400x200&maptype=roadmap&markers=color:red%7Clabel:L%7C${location?.latitude},${location?.longitude}&key=${process.env.EXPO_PUBLIC_mapsAPIKey}`,
           }}
           style={styles.map}
         />
@@ -123,7 +124,6 @@ export default function LocationManager() {
         disabled={!location}
         title="Save Location to Firestore"
         onPress={async () => {
-          console.log("******");
           await writeToDB(
             {
               address: {
@@ -136,7 +136,7 @@ export default function LocationManager() {
             "users",
             auth.currentUser?.uid
           );
-          router.replace("/");
+          router.back();
         }}
       />
     </View>
