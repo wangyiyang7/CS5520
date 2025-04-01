@@ -1,6 +1,7 @@
 import { Alert, Button, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import {
+  cancelAllScheduledNotificationsAsync,
   getPermissionsAsync,
   requestPermissionsAsync,
   SchedulableTriggerInputTypes,
@@ -22,6 +23,8 @@ export default function NotificationManager() {
   }
   async function scheduleNotificationHandler() {
     try {
+      await cancelAllScheduledNotificationsAsync();
+
       const hasPermission = await verifyPermission();
       if (!hasPermission) {
         Alert.alert(
@@ -38,6 +41,7 @@ export default function NotificationManager() {
         trigger: {
           seconds: 5,
           type: SchedulableTriggerInputTypes.TIME_INTERVAL,
+          repeats: false,
         },
       });
     } catch (e) {
@@ -50,6 +54,12 @@ export default function NotificationManager() {
       <Button
         title="Remind me to add my daily goals"
         onPress={scheduleNotificationHandler}
+      />
+      <Button
+        title="Cancel ALL"
+        onPress={async () => {
+          await cancelAllScheduledNotificationsAsync();
+        }}
       />
     </View>
   );
