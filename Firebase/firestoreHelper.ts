@@ -10,14 +10,34 @@ import {
 import { database } from "./firebaseSetup";
 import { GoalData, User } from "@/types";
 
-export async function writeToDB(data: GoalData | User, collectionName: string) {
+export async function writeToDB(
+  data: GoalData | User,
+  collectionName: string,
+  id?: string
+) {
   try {
-    const docRef = await addDoc(collection(database, collectionName), data);
+    if (id) {
+      const newDocRef = await setDoc(doc(database, collectionName, id), data, {
+        merge: true,
+      });
+    } else {
+      const docRef = await addDoc(collection(database, collectionName), data);
+    }
   } catch (e) {
     console.error("Error adding document: ", e);
   }
 }
 
+//delete a document from the database
+export async function deleteFromDB(id: string, collectionName: string) {
+  try {
+    await deleteDoc(doc(database, collectionName, id));
+  } catch (e) {
+    console.error("Error deleting document: ", e);
+  }
+}
+
+//read all documents from the database
 export async function readAllFromDB(collectionName: string) {
   const querySnapshot = await getDocs(collection(database, collectionName));
   if (querySnapshot.empty) return null;
@@ -29,12 +49,7 @@ export async function readAllFromDB(collectionName: string) {
   return data;
 }
 
-export async function deleteFromDB(id: string, collectionName: string) {
-  try {
-    await deleteDoc(doc(database, collectionName, id));
-  } catch (e) {}
-}
-
+//read a document from the database
 export async function readDocFromDB(id: string, collectionName: string) {
   try {
     const docRef = doc(database, collectionName, id);
@@ -54,10 +69,9 @@ export async function updateDB(
   data: { [key: string]: any }
 ) {
   try {
+    //update a document in the database
     await setDoc(doc(database, collectionName, id), data, { merge: true });
   } catch (e) {
     console.error("Error updating document: ", e);
   }
 }
-
-export { GoalData };

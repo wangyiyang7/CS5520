@@ -19,7 +19,7 @@ export default function Layout() {
           headerRight: () => {
             return (
               <PressableButton
-                pressedHandler={() => {
+                pressedInHandler={() => {
                   router.navigate("/(protected)/profile/");
                 }}
                 componentStyle={{ backgroundColor: "transparent" }}
@@ -42,7 +42,7 @@ export default function Layout() {
           headerRight: () => {
             return (
               <PressableButton
-                pressedHandler={() => {
+                pressedInHandler={() => {
                   signOut(auth);
                 }}
                 componentStyle={{ backgroundColor: "transparent" }}

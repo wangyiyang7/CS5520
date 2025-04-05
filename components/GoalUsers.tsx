@@ -1,20 +1,24 @@
-import { readAllFromDB, writeToDB } from "@/Firebase/firestoreHelper";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList } from "react-native";
+import { readAllFromDB, writeToDB } from "@/Firebase/firestoreHelper";
 import { User } from "@/types";
 
-export const GoalUsers = (props: { goalID: string }) => {
-  const [users, setUsers] = useState<String[]>([]);
+interface GoalUsersProps {
+  goalId: string;
+}
+
+export default function GoalUsers({ goalId }: GoalUsersProps) {
+  const [users, setUsers] = useState<string[]>([]);
   useEffect(() => {
     async function getUsers() {
       try {
         //check the database if the users are already there
-        const userFromDB = await readAllFromDB(`goals/${props.goalID}/users`);
+        const userFromDB = await readAllFromDB(`goals/${goalId}/users`);
         console.log("read from db ");
         //if they are, set the users state to the users from the database
         if (userFromDB) {
           const userNames = userFromDB.map((user: User) => {
-            return user.name;
+            return user.name || "Unknown User";
           });
           setUsers(userNames);
           return;
@@ -34,21 +38,31 @@ export const GoalUsers = (props: { goalID: string }) => {
         const data = await response.json();
 
         const userNames = data.map((user: User) => {
-          writeToDB(user, `goals/${props.goalID}/users`);
-          return user.name;
+          if (user.name) {
+            writeToDB(user, `goals/${goalId}/users`);
+            return user.name;
+          }
+          return "Unknown User";
         });
         setUsers(userNames);
         // write the users data to firestore using writeToDB
       } catch (err) {
         console.log("fetching users ", err);
+        setUsers(["Error loading users"]);
       }
     }
     getUsers();
   }, []);
   return (
     <View>
-      <Text>GoalUsers</Text>
-      <FlatList data={users} renderItem={({ item }) => <Text>{item}</Text>} />
+      <FlatList
+        data={users}
+        renderItem={({ item }) => {
+          return <Text>{item}</Text>;
+        }}
+      />
     </View>
   );
-};
+}
+
+const styles = StyleSheet.create({});

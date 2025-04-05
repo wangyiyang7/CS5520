@@ -41,7 +41,7 @@ export default function GoalItem({
     >
       <Text style={styles.text}>{goalObj.text} </Text>
       <PressableButton
-        pressedHandler={() => {
+        pressedInHandler={() => {
           //pass the id
           deleteHandler(goalObj.id);
         }}
