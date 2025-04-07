@@ -41,13 +41,27 @@ export default function App() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [uri, setURI] = useState("");
 
+  function testPushNotification() {
+    fetch("https://exp.host/--/api/v2/push/send", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        to: "",
+        title: "Push Notification",
+        body: "This is a push notification",
+      }),
+    });
+  }
+
   useEffect(() => {
     async function fetchToken() {
       try {
-        const token = await Notifications.getExpoPushTokenAsync({
-          // projectId: Constants.expoConfig.extra.eas.projectId,
+        const tokenInfo = await Notifications.getExpoPushTokenAsync({
+          projectId: Constants?.expoConfig?.extra?.eas.projectId,
         });
-        console.log(token);
+        console.log(tokenInfo);
       } catch (error) {
         console.error(error);
       }
