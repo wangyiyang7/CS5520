@@ -37,9 +37,10 @@ export default function NotificationManager() {
         content: {
           title: "Daily Goals Reminder",
           body: "Don't forget to add your daily goals!",
+          data: { url: "http://www.google.com" },
         },
         trigger: {
-          seconds: 5,
+          seconds: 3,
           type: SchedulableTriggerInputTypes.TIME_INTERVAL,
           repeats: false,
         },
@@ -56,7 +57,7 @@ export default function NotificationManager() {
         onPress={scheduleNotificationHandler}
       />
       <Button
-        title="Cancel ALL"
+        title="Cancel Notification"
         onPress={async () => {
           await cancelAllScheduledNotificationsAsync();
         }}

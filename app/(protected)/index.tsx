@@ -3,6 +3,7 @@ import {
   Alert,
   Button,
   FlatList,
+  Linking,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -24,6 +25,7 @@ export interface Goal extends GoalData {
 }
 
 import * as Notifications from "expo-notifications";
+import Constants from "expo-constants";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -38,6 +40,40 @@ export default function App() {
   const [goals, setGoals] = useState<Goal[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [uri, setURI] = useState("");
+
+  useEffect(() => {
+    async function fetchToken() {
+      try {
+        const token = await Notifications.getExpoPushTokenAsync({
+          // projectId: Constants.expoConfig.extra.eas.projectId,
+        });
+        console.log(token);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    fetchToken();
+  }, []);
+
+  useEffect(() => {
+    const subscription = Notifications.addNotificationReceivedListener(
+      (notification) => {
+        console.log(notification);
+      }
+    );
+    return () => subscription.remove();
+  }, []);
+
+  useEffect(() => {
+    const subscription = Notifications.addNotificationResponseReceivedListener(
+      (response) => {
+        const url = response.notification.request.content.data.url;
+        Linking.openURL(url);
+      }
+    );
+    return () => subscription.remove();
+  }, []);
 
   useEffect(() => {
     if (!auth.currentUser) return;
